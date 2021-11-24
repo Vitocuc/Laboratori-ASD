@@ -72,26 +72,39 @@ void wrapper(int r,int c,casella_b *sol,tile *val,casella_b ** board){
 
 }
 // ogni tiles ha il codice sia per permettere di trovarla tramite indice sia oer permeyyerle di essere salvata come indice nella soluziion
-int permutazioni_semplice(int pos, casella_b *sol, tile *val, casella_b **mark, int n,int r,int c,int cnt,int sum) { 
-    //sol contiene il valore delle soluzioni,vla contiene tutti i valori da prendere quindi i valori delle tabelle
-    // val == tiles
-    // mark mi dice se quella tiles è gia stata presa o meno
-    //board si comporta già come soluzione
-    int i,j,indice,sum_r,sum_c; 
-    if (pos >= n) {
+int permutazioni_semplice(int pos,int riga,casella_b **sol, tile *val,int *mark, int n,int r,int c,int cnt,int sum,casella_b **fin) { 
+    int i,j;
+    if ((riga*c) >= n) {
         check();//posso sapere alla fine solamente dopo aver visto tutte le caselle
         displaySol();// sol non contiene solamente 0 e 1 ma l'indice di ogni tiles che andrà ricercato per essere stampato
         return cnt+1;
     }
+    if(pos == c){ 
+        pos = 0; 
+        riga++;
+    }
     for (i=0; i<n; i++){
-        for(j = 0;j<c;j++){
-            if (mark[i][j].t == -1 && mark[i][j].r == -1){// posso inserire una tessera
-                mark[i][j].t = indice; //print sol
-                sol[pos].t = val[indice].codice;
-                sum = val[indice].valoreT1 + val[indice].valoreT2;               
-                cnt = permutazioni_semplice(pos+1,sol,val,mark,n,r,c,cnt,sum); 
-                mark[i][j].t = mark[i][j].r = -1;
-            }
+        if (mark[i] == 0){ // questa tessera non è stata inserita
+            mark[i] = 1; // questa tessera è stat gia presa
+            sol[riga][pos].t = val[indice].codice;// inserisco nella mia soluzione la tessera che prendo
+            sol[riga][pos].r = 0;// inserisco la rotazione che mi è detta dalla board
+            // valuto la somma in teoria devo vedere se è accettabili ovvero se hanno lo stesso colore
+            //check per colonne(T2 è verticale)
+            if(riga == 0) sum += val[sol[riga][pos].t].valoreT2; // inizializzo alla prima cella
+            else if(val[sol[riga][pos].t].coloreT2 == val[sol[riga-1][pos].t].coloreT2) // posso sommare
+                sum+=val[sol[riga][pos].t].valoreT2;
+            //check per righe(T1 è orizzontale)
+            if(pos == 0) sum+ = val[sol[riga][pos].t].valoreT1; // inizializzo alla prima cella 
+            if(val[sol[riga][pos].t].coloreT1 == val[sol[riga][pos-1].t].coloreT1) // posso sommare
+                sum += val[sol[riga][pos].t].valoreT1;               
+            cnt = permutazioni_semplice(pos+1,riga,sol,val,mark,n,r,c,cnt,sum,fin); 
+            sol[riga][pos].r = 1; // cambio rotazione
+            // invertire le condizioni di controllo
+
+            
+            // valuto la somma in teoria devo vedere se è accettabili ovvero se hanno lo stesso colore
+            cnt = permutazioni_semplice(pos+1,riga,sol,val,mark,n,r,c,cnt,sum,fin); 
+            mark[i] = 0; // backtrack della soluzioni
         }
     }
     return cnt;
