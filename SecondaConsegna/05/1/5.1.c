@@ -6,13 +6,12 @@ typedef struct{
     int fine;
 }att;
 int diff_curr = 0;
-// mi sembra che l'algortimo del power set con le disposizioni ripetute non siano buono quabdo dobbiamo utilizzare queste differenze
-int powerset(int pos,att *val,int *sol,int k,int cnt,int diff,int *fin);
-// è un problema di ottimizzazione
 void leggiFile(att **v,int *n,char *s);
 void attSel(int n, att *v);
-// due attivita sono incompatibili se e solo se si intersecano e sovrappongono quindi semplice
-// utilizzo i powerset perchè sono sottoinsiemki 
+void check(int *sol,int *fin,att *val,int k);
+void displaySol(int *sol,att *val,int k);
+void powerset(int pos,att *val,int *sol,int k,int *fin);
+int promising(att* val,int pos,int *sol);
 int main(){
     int n;
     att *v;
@@ -27,50 +26,55 @@ void displaySol(int *sol,att *val,int k){
         for (j=0; j<k; j++) if (sol[j]!=0) printf("%d,%d ", val[j].inizio,val[j].fine); 
         printf("}\n");
 }
-void check(int *sol,int *fin,int k,int diff){
-    int j;
+void check(int *sol,int *fin,att *val,int k){
+    int j,diff = 0;
+    //calcolo della differenza
+    for (j=0; j<k; j++) if (sol[j]==1) {
+        diff += val[j].fine - val[j].inizio;
+    };
+    printf("La differenza e' :%d",diff);
     if(diff>diff_curr){
-        printf("Per ora è la soluzione migliore:");
+        printf("Per ora la soluzione migliore e':");
         diff_curr = diff;
         //aggiorno la soluzione
-        for (j=0; j<k; j++) if (sol[j]!=0) fin[j] = 1;
+        for (j=0; j<k; j++) fin[j] = sol[j]; /// dovevo copiare
     }
 }
-int powerset(int pos,att *val,int *sol,int k,int cnt,int diff,int *fin) { 
-    int j;
-    if (pos >= k){
-        check(sol,fin,k,diff);
+void powerset(int pos,att *val,int *sol,int k,int *fin){
+    int i = 0;
+    if(pos>= k){
+        // condizione di terminazione
+        check(sol,fin,val,k);
         displaySol(sol,val,k);
-        return cnt+1; // non devo pensare di vucare la ricorsione
+        return;
     }
-    // devo controllare che con lo spazio di soluzioni successivo la data e fine non siano comprese
+    if(!promising(val,pos,sol)){ // se l'elemento non è promettente lo las
+        sol[pos] = 0;
+        powerset(pos+1,val,sol,k,fin);
+        return;
+    }
+    sol[pos] = 1;
+    powerset(pos+1,val,sol,k,fin);
     sol[pos] = 0;
-    cnt = powerset(pos+1, val, sol, k, cnt,diff,fin);
-    //quando posso avere un controllo sulla soluzione. Se non ho inserito nessun elemento nella soluzioni allora posso inserirlo senza controllo
-    //se ne ho inserito almeno uno devo controllare che il precedente a wuesto punto, rispetti i criteri di 
-    if(sol[pos+1] != 0 && pos+1<k){if(val[pos].inizio>val[pos+1].inizio && val[pos].fine<val[pos+1].fine){
-        sol[pos] = 1;
-        diff+=val[pos].fine - val[pos].inizio;
-        cnt = powerset(pos+1, val, sol, k, cnt,diff,fin);
-        }
-    }else{
-        sol[pos] = 1;
-        diff+=val[pos].fine - val[pos].inizio;
-        cnt = powerset(pos+1, val, sol, k, cnt,diff,fin);
-
-    }
-return cnt;
+    powerset(pos+1,val,sol,k,fin);
 }
-// in un insieme ho piu sottoinsiemi
+int promising(att* val,int pos,int *sol){
+    int i ;
+    for(i = 0;i<pos;i++){
+        if(sol[i] == 1) if(val[i].inizio < val[pos].fine && val[pos].inizio < val[i].fine)// se almeno un valore non va bene allora lo devo escludere
+                    return 0 ;
+    } 
+    return 1;
+
+}
 void attSel(int n, att *v){
     int sol[n];
     int i;
     int fin[n]; // devo ricordarmi di renderlo tutto zero prima
     memset(fin,0,n*sizeof(fin[0]));
-    int count = powerset(0,v,sol,n,0,0,fin);
+    powerset(0,v,sol,n,fin);
     printf("La soluzione migliore con differenza %d e':",diff_curr);
     displaySol(fin,v,n);
-    printf("Il numero di sottoinsiemi e' %d",count);
 }
 void leggiFile(att **v,int *n,char *s){
     FILE *fp; 
