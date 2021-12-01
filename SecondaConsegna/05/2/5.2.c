@@ -12,18 +12,118 @@ typedef struct{
     int t;
     int r;
 }casella_b;
-void leggiTiles(tile **tiles2);
-void leggiScacchiera(casella_b ***board2);
+void perm_sempl(int pos, int row,int col,casella_b **sol,int *mark,casella_b **fin,tile *val,int n,int r,int c);
+void leggiTiles(tile **tiles2,int *n_tile);
+void leggiScacchiera(casella_b ***board2,int *r1,int *c1);
+void wrapper(tile *tiles,int n_tile,casella_b **board,int row,int col); // nel wrapper segno le soluzioni già prese per unificare il controllo
+int check_pt(casella_b ** sol,casella_b **fin,tile * val,int r,int c);
+void displaySol(casella_b **fin,tile *val,int r,int c);
 int main(){
     tile *tiles;
     casella_b **board;
-    leggiTiles(&tiles);
-    leggiScacchiera(&board);
-    // mi impone di avere un punteggio massimo
-    //problema di ottimizzazione
-    // posso fare pruning quando la cella non è vuota
+    int row,col,n_tile;
+    leggiTiles(&tiles,&n_tile);
+    leggiScacchiera(&board,&row,&col);
+    wrapper(tiles,n_tile,board,row,col);
 }
-void leggiTiles(tile **tiles2){
+void wrapper(tile *tiles,int n_tile,casella_b **board,int row,int col){
+    //dichiaro mark e fin
+    int mark[n_tile],i;
+    // fin è allocato dinamicamente
+    casella_b **fin;
+    fin = malloc(row*sizeof(casella_b *));
+    for(i = 0;i<row;i++) fin[i] = malloc(col*sizeof(casella_b));
+    perm_sempl(0,0,0,board,mark,fin,tiles,n_tile,row,col);
+}
+void displaySol(casella_b **fin,tile *val,int r,int c){
+    int i,j;
+    for(i = 0;i<r;i++){
+        for(j = 0;j<c;j++){
+            if(fin[i][j].r == 0){
+                // stampo normalmente T2 verticale
+                printf("\t%c\t",val[fin[i][j].t].coloreT2);
+                printf("%c\t%d",val[fin[i][j].t].coloreT1,val[fin[i][j].t].valoreT1);
+                printf("\t%d\t",val[fin[i][j].t].valoreT2);
+            }
+            if(fin[i][j].r == 1){
+                // stampo girato T2 orizzontale
+                printf("\t%c\t",val[fin[i][j].t].coloreT1);
+                printf("%c\t%d",val[fin[i][j].t].coloreT2,val[fin[i][j].t].valoreT2);
+                printf("\t%d\t",val[fin[i][j].t].valoreT1);
+            }
+            
+        }
+    }
+
+}
+int check_pt(casella_b ** sol,casella_b **fin,tile * val,int r,int c){
+    int i,j,pt_row = 0,pt_col = 0,pt_tot;
+    for(i = 0;i<r;i++){
+        for(j = 0;j<c;j++){
+            if(sol[i][j].r == 0) { // non ruotata
+                if(j+1 == c){
+                    if(val[sol[i][j].t].coloreT1 == val[sol[i][j-1].t].coloreT1) // controllo per righe
+                        pt_row += val[sol[i][j].t].valoreT1;
+                }else if(val[sol[i][j].t].coloreT1 == val[sol[i][j+1].t].coloreT1) // controllo per righe
+                        pt_row += val[sol[i][j].t].valoreT1;
+                if(i+1 == r){
+                    if(val[sol[i][j].t].coloreT2 == val[sol[i-1][j].t].coloreT2) // coontrollo per colonne
+                        pt_col += val[sol[i+1][j].t].valoreT2;
+                }else if(val[sol[i][j].t].coloreT2 == val[sol[i+1][j].t].coloreT2) // coontrollo per colonne
+                    pt_col += val[sol[i+1][j].t].valoreT2;
+            }else{ // ruotata
+                if(i+1 == r){
+                    if(val[sol[i][j].t].coloreT1 == val[sol[i-1][j].t].coloreT1) // coontrollo per colonne
+                        pt_col += val[sol[i+1][j].t].valoreT1;
+                }else if(val[sol[i][j].t].coloreT1 == val[sol[i+1][j].t].coloreT1) // coontrollo per colonne
+                    pt_col += val[sol[i+1][j].t].valoreT1;
+                if(j+1 == c){
+                    if(val[sol[i][j].t].coloreT2 == val[sol[i][j-1].t].coloreT2) // controllo per righe
+                        pt_row += val[sol[i][j].t].valoreT2;
+                }else if(val[sol[i][j].t].coloreT2 == val[sol[i][j+1].t].coloreT2) // controllo per righe
+                        pt_row += val[sol[i][j].t].valoreT2;
+            } 
+        }
+    }
+    pt_tot = pt_row + pt_col;
+    if(pt_tot > PT_MAX) {
+        PT_MAX = pt_tot;
+        //copio la soluzione
+        for(i = 0;i<r;i++)
+            for(j = 0;j<c;j++)
+                fin[i][j] = sol[i][j];
+
+        return 1;
+    }
+    return 0;
+}
+void perm_sempl(int pos, int row,int col,casella_b **sol,int *mark,casella_b **fin,tile *val,int n,int r,int c){
+    int i = 0,flag;
+    //condizione di terminazione
+    if(row == r-1 && col == c-1){
+        flag = check_pt(sol,fin,val,r,c);
+        if (flag) displaySol(fin,val,r,c);
+    }
+    // aggiorno la riga quando:
+    if(col == c-1){//aggiorno la riga e resetto la colonna
+        row++;
+        col = 0;
+    }
+    //ciclo per prendere le soluzioni
+    for(i = 0;i<n;i++){
+        if(mark[i] == 0){
+            mark[i] = 1; // marco l'elemento
+            sol[row][col].t = val[pos].codice;
+            sol[row][col].r = 0; // rotazione normale con T2 verticale
+            perm_sempl(pos+1,row,col+1,sol,mark,fin,val,n,r,c);// ricorrop sapendo di aver preso quell'elemento in quella poszione
+            sol[row][col].t = val[pos].codice;
+            sol[row][col].r = 1; // ricorro un'ALTRA VOLTA sapendo di aver cambiato rotazione in questo modo ripeto le iterazioni anche per tutte le altre rotazioni
+            perm_sempl(pos+1,row,col+1,sol,mark,fin,val,n,r,c); // t2 orizzonatale
+            mark[i] = 0;
+        }
+    }
+}
+void leggiTiles(tile **tiles2,int *n_tile){
     FILE *fp;
     tile *tiles;
     int t,i = 0;
@@ -35,15 +135,16 @@ void leggiTiles(tile **tiles2){
     tiles = malloc(t*sizeof(tile));
     printf("%d",t);
     while(!feof(fp)){
-        fscanf(fp,"%c%d%c%d",tiles[i].coloreT1,&tiles[i].valoreT1,tiles[i].coloreT2,&tiles[i].valoreT2);
+        fscanf(fp," %c%d %c%d",tiles[i].coloreT1,&tiles[i].valoreT1,tiles[i].coloreT2,&tiles[i].valoreT2);
         tiles[i].codice = i;
         printf("%d",tiles[i].codice);
         i++;
     }
     *tiles2 = tiles;
+    *n_tile = t;
     fclose(fp);
 }
-void leggiScacchiera(casella_b ***board2){
+void leggiScacchiera(casella_b ***board2,int *r1,int *c1){
     int r,c,i= 0,j;
     FILE *fp;
     casella_b **board;
@@ -59,54 +160,7 @@ void leggiScacchiera(casella_b ***board2){
         i++;
     }
     *board2 = board;
+    *r1 = r;
+    *c1 = c;
     fclose(fp);
-}
-//inizializzo sol con le tail già inserite
-
-void wrapper(int r,int c,casella_b *sol,tile *val,casella_b ** board){
-    int i = 0,n = r*c;
-    for(i = 0;i<n;i++){
-        if(sol[i].t != -1 && sol[i].r != -1) sol[i].t = val[i].codice;
-    }
-    permutazioni_semplice(0,sol,val,board,n,r,c,0,0);
-
-}
-// ogni tiles ha il codice sia per permettere di trovarla tramite indice sia oer permeyyerle di essere salvata come indice nella soluziion
-int permutazioni_semplice(int pos,int riga,casella_b **sol, tile *val,int *mark, int n,int r,int c,int cnt,int sum,casella_b **fin) { 
-    int i,j;
-    if ((riga*c) >= n) {
-        check();//posso sapere alla fine solamente dopo aver visto tutte le caselle
-        displaySol();// sol non contiene solamente 0 e 1 ma l'indice di ogni tiles che andrà ricercato per essere stampato
-        return cnt+1;
-    }
-    if(pos == c){ 
-        pos = 0; 
-        riga++;
-    }
-    for (i=0; i<n; i++){
-        if (mark[i] == 0){ // questa tessera non è stata inserita
-            mark[i] = 1; // questa tessera è stat gia presa
-            sol[riga][pos].t = val[indice].codice;// inserisco nella mia soluzione la tessera che prendo
-            sol[riga][pos].r = 0;// inserisco la rotazione che mi è detta dalla board
-            // valuto la somma in teoria devo vedere se è accettabili ovvero se hanno lo stesso colore
-            //check per colonne(T2 è verticale)
-            if(riga == 0) sum += val[sol[riga][pos].t].valoreT2; // inizializzo alla prima cella
-            else if(val[sol[riga][pos].t].coloreT2 == val[sol[riga-1][pos].t].coloreT2) // posso sommare
-                sum+=val[sol[riga][pos].t].valoreT2;
-            //check per righe(T1 è orizzontale)
-            if(pos == 0) sum+ = val[sol[riga][pos].t].valoreT1; // inizializzo alla prima cella 
-            if(val[sol[riga][pos].t].coloreT1 == val[sol[riga][pos-1].t].coloreT1) // posso sommare
-                sum += val[sol[riga][pos].t].valoreT1;               
-            cnt = permutazioni_semplice(pos+1,riga,sol,val,mark,n,r,c,cnt,sum,fin); 
-            sol[riga][pos].r = 1; // cambio rotazione
-            // invertire le condizioni di controllo
-
-            
-            // valuto la somma in teoria devo vedere se è accettabili ovvero se hanno lo stesso colore
-            cnt = permutazioni_semplice(pos+1,riga,sol,val,mark,n,r,c,cnt,sum,fin); 
-            mark[i] = 0; // backtrack della soluzioni
-        }
-    }
-    return cnt;
-    
 }
