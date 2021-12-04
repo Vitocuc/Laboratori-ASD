@@ -74,26 +74,32 @@ void displaySol(casella_b **fin,tile *val,int r,int c){
 void check_pt(casella_b ** sol,casella_b **fin,tile * val,int r,int c){
     int i,j,pt_row = 0,pt_col = 0,pt_tot = 0,flag;
     // primo ciclo
-    for(i = 0;i<r-1;i++){
+    for(i = 0;i<r;i++){
         flag = 0;
         pt_row = 0;
         for(j = 0;j<c-1 && flag == 0;j++){
             if(sol[i][j].r == 0 && sol[i][j+1].r ==0) {
-                if(val[sol[i][j].t].coloreT1 == val[sol[i][j+1].t].coloreT1) // controllo per righe
+                if(val[sol[i][j].t].coloreT1 == val[sol[i][j+1].t].coloreT1){// controllo per righe
                     pt_row += val[sol[i][j].t].valoreT1;
+                    if(j+1 == c-1) pt_row += val[sol[i][j+1].t].valoreT1;
+                }
                 else flag = 1;
             }else if(sol[i][j].r == 0 && sol[i][j+1].r == 1){
-                    if(val[sol[i][j].t].coloreT1 == val[sol[i][j+1].t].coloreT2) // controllo per righe
-                    pt_row += val[sol[i][j].t].valoreT1;
-                else flag = 1;
+                    if(val[sol[i][j].t].coloreT1 == val[sol[i][j+1].t].coloreT2){ // controllo per righe
+                        pt_row += val[sol[i][j].t].valoreT1;
+                        if(j+1 == c-1) pt_row += val[sol[i][j+1].t].valoreT2;
+                    }else flag = 1;
             }else if(sol[i][j].r == 1 && sol[i][j+1].r ==0){
-                if(val[sol[i][j].t].coloreT2 == val[sol[i][j+1].t].coloreT1) // controllo per righe
+                if(val[sol[i][j].t].coloreT2 == val[sol[i][j+1].t].coloreT1){ // controllo per righe
                         pt_row += val[sol[i][j].t].valoreT2;
+                        if(j+1 == c-1) pt_row += val[sol[i][j+1].t].valoreT1;
+                    }   
                 else flag = 1; 
             }else if(sol[i][j].r == 1 && sol[i][j+1].r ==1){
-                if(val[sol[i][j].t].coloreT2 == val[sol[i][j+1].t].coloreT2) // controllo per righe
-                        pt_row += val[sol[i][j].t].valoreT2;
-                else flag = 1;
+                if(val[sol[i][j].t].coloreT2 == val[sol[i][j+1].t].coloreT2){
+                    pt_row += val[sol[i][j].t].valoreT2;
+                    if(j+1 == c-1) pt_row += val[sol[i][j+1].t].valoreT2;
+                }else flag = 1;
             }
         }
         
@@ -103,22 +109,30 @@ void check_pt(casella_b ** sol,casella_b **fin,tile * val,int r,int c){
     for(i = 0;i<r-1;i++){
         flag = 0;
         pt_col = 0;
-        for(j = 0;j<c-1 && flag == 0;j++){
+        for(j = 0;j<c && flag == 0;j++){
             if(sol[i][j].r == 0 && sol[i+1][j].r == 0) {
-                 if(val[sol[i][j].t].coloreT2 == val[sol[i+1][j].t].coloreT2) // controllo per righe
+                 if(val[sol[i][j].t].coloreT2 == val[sol[i+1][j].t].coloreT2){// controllo per righe
                     pt_col += val[sol[i][j].t].valoreT2;
+                    if(i+1 == r-1) pt_col += val[sol[i+1][j].t].valoreT2;
+                 }
                 else flag = 1;
             }else if(sol[i][j].r == 0 && sol[i+1][j].r == 1){   
-                if(val[sol[i][j].t].coloreT2 == val[sol[i+1][j].t].coloreT1) // controllo per righe
+                if(val[sol[i][j].t].coloreT2 == val[sol[i+1][j].t].coloreT1){ // controllo per righe
                     pt_col += val[sol[i][j].t].valoreT2;
+                     if(i+1 == r-1) pt_col += val[sol[i+1][j].t].valoreT1;
+                }
                 else flag = 1;
             }else if(sol[i][j].r == 1 && sol[i+1][j].r == 0){
-                if(val[sol[i][j].t].coloreT1 == val[sol[i+1][j].t].coloreT2) // controllo per righe
+                if(val[sol[i][j].t].coloreT1 == val[sol[i+1][j].t].coloreT2){ // controllo per righe
                     pt_col += val[sol[i][j].t].valoreT1;
+                     if(i+1 == r-1) pt_col += val[sol[i+1][j].t].valoreT2;
+                }
                 else flag = 1;
             }else if(sol[i][j].r == 1 && sol[i+1][j].r == 1){
-                if(val[sol[i][j].t].coloreT1 == val[sol[i+1][j].t].coloreT1) // controllo per righe
+                if(val[sol[i][j].t].coloreT1 == val[sol[i+1][j].t].coloreT1){ // controllo per righe
                     pt_col += val[sol[i][j].t].valoreT1;
+                    if(i+1 == r-1) pt_col += val[sol[i+1][j].t].valoreT1;
+                    }
                 else flag = 1;
             }        
         }
