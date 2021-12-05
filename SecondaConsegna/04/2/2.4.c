@@ -127,6 +127,8 @@ link menu(link head){
             t = ricercaCodice(&head,codice);
             stampaItem(t);
             break;
+            // osservazione: nelle cancellazione basterre utilizzare il passaggio per puntatore solo quando
+            // dobbiamo modificare la testa,altrimento possiamo vederlo come un normale vettore contiguo,==> CAMBIA IL VALORE DELLA TESTA
         case canc1:
             printf("Inserisci il codice da ricercare:");
             scanf("%s",codice);
