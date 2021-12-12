@@ -1,0 +1,5 @@
+A0003 Antonio Neri 19/4/1999 GalleriaTermini Roma 137875 
+A0004 Anna Gialli 4/9/1995 FratelliAlinari Firenze 138163 
+A0005 Marco Bianchi 3/7/1993 PiazzaMazzini Napoli 138451 
+A0001 Mario Rossi 1/2/1990 ViaMarcoPolo Torino 137107 
+A0002 Lucia Verdi 7/11/1989 ViaTorino Milano 137587 

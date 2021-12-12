@@ -39,7 +39,7 @@ Item cancellazione1(link *head, char *key);
 Item cancellazione2(link *head,date data1,date data2);
 void liberaLista(link head);
 void stampafile(link head);
-void inserimentoData(date data);
+date inserimentoData();
 Item inserimentoItem();
 //MAIN
 int main(){
@@ -51,18 +51,20 @@ int main(){
   liberaLista(head);
 }
 //Funzioni
-void inserimentoData( date data){
+date inserimentoData(){
+  date data;
   printf("Inserisci giorno:");
   scanf("%d",&data.gg);
   printf("Inserisci mese:");
   scanf("%d",&data.mm);
   printf("Inserisci anno:");
   scanf("%d",&data.aaaa);
+  return data;
 }
 link insertSorted(link head,Item val){
   link x,p;
-  if(head == NULL || checkData(val.dataN,head->a.dataN)>0) return  newNode(val,head);
-  for(x = head->next ,p= head;x != NULL && checkData(val.dataN,x->a.dataN)>0;p = x,x = x->next); // esegue anche l'ultimo nodo quindi ne consente la modifica(inseirmento in lista in  maniera ordinata)
+  if(head == NULL || checkData(val.dataN,head->a.dataN)>0) return newNode(val,head);
+  for(x = head->next ,p= head;x != NULL && checkData(val.dataN,x->a.dataN)<0;p = x,x = x->next); // esegue anche l'ultimo nodo quindi ne consente la modifica(inseirmento in lista in  maniera ordinata)
   p->next = newNode(val,p->next);
   return head;
 }
@@ -108,11 +110,11 @@ link menu(link head){
   Item val,t;
   int stop = 0,flag = 0;
   comando_c c;
-  while(stop ==0){
+  while(stop == 0){
     c = scelta();
     switch(c){
         case tastiera:
-            val = inserimentoItem(); 
+            val = inserimentoItem();
             head = insertNode(head,val);
             stampaLista(head);
             break;
@@ -124,26 +126,24 @@ link menu(link head){
             printf("Inserisci il codice da ricercare:");
             scanf("%s",codice);
             t = ricercaCodice(&head,codice);
-            if(strcmp(t.codice,"") != 0) stampaItem(t);
-            else printf("Non esiste un nodo con questo codice");
+            stampaItem(t);
             break;
         case canc1:
-            printf("Inserisci il codice da ricercare:");
+            printf("Inserisci il codice da cancellare:");
             scanf("%s",codice);
             t = cancellazione1(&head,codice);
-            if(strcmp(t.codice,"") != 0) stampaItem(t);
-            else printf("Non esiste un nodo con questo codice");
+            stampaItem(t);
             stampaLista(head);
             break;
         case canc2:
             printf("Data1\n");
-            inserimentoData(data1);
+            data1 = inserimentoData();
             printf("Data2\n");
-            inserimentoData(data2);
-            // aggiustare sto ciclo
+            data2 = inserimentoData();
+            flag = checkData(data1,data2);
             do{
                 t = cancellazione2(&head,data1,data2);
-                if(strcmp(t.codice,"") != 0)stampaItem(t);
+                stampaItem(t);
             }while(strcmp(t.codice,"") != 0);
             break;
         case stampaf:
@@ -151,6 +151,7 @@ link menu(link head){
             break;
         case fine: 
             stop = 1;
+            break;
         default: printf("Inserimento errato,riprovare \n");
             break;
     }
@@ -163,11 +164,12 @@ void stampafile(link head){
         printf("Errore nell'apertura del file");
         exit(1);
     }
-    for(x = head;x->next != NULL;x = x->next) fprintf(fp,"%s %s %s %d/%d/%d %s %s %d",x->a.codice,x->a.nome,x->a.cognome,x->a.dataN.gg,x->a.dataN.mm,x->a.dataN.aaaa,x->a.via,x->a.citta,x->a.citta);
+    for(x = head;x != NULL;x = x->next) fprintf(fp,"%s %s %s %d/%d/%d %s %s %d \n",x->a.codice,x->a.nome,x->a.cognome,x->a.dataN.gg,x->a.dataN.mm,x->a.dataN.aaaa,x->a.via,x->a.citta,x->a.citta);
     fclose(fp);
 }
 void stampaItem(Item val){
-    printf("%s %s %s %d/%d/%d %s %s %d \n",val.codice,val.nome,val.cognome,val.dataN.gg,val.dataN.mm,val.dataN.aaaa,val.via,val.citta,val.cap);
+    if(strcmp(val.codice,"") == 0) printf("Non esistono piu' nodi con questo codice o data\n");
+    else printf("%s %s %s %d/%d/%d %s %s %d \n",val.codice,val.nome,val.cognome,val.dataN.gg,val.dataN.mm,val.dataN.aaaa,val.via,val.citta,val.cap);
 }
 link insertNode(link head,Item val){
   head = insertSorted(head,val);
@@ -194,7 +196,7 @@ Item ricercaCodice(link *head,char *key){
 }
 Item cancellazione1(link *head, char *key){
   link *x;
-  link p,t;
+  link t;
   Item tmp;
   strcpy(tmp.codice,"");
   for(x = head;(*x) != NULL;x = &((*x)->next)){
@@ -209,13 +211,13 @@ Item cancellazione1(link *head, char *key){
   return tmp;
 }
 Item cancellazione2(link *head,date data1,date data2){
-  link *x;
-  link p,t;
+  link *x,t;
   Item tmp;
-  strcpy(tmp.codice,"");
+  int a,b;
   //si assume data1>=data2
+  strcpy(tmp.codice,"");
   for(x = head;(*x) != NULL;x = &((*x)->next)){
-    if(checkData(data1,(*x)->a.dataN)>=0 && checkData(data2,(*x)->a.dataN)<=0 ){
+    if((checkData(data1,(*x)->a.dataN)>=0) && (checkData(data2,(*x)->a.dataN)<=0 )){
       t = *x;
       *x = (*x)->next;
       tmp = t->a;
