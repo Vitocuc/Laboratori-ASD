@@ -67,8 +67,9 @@ void displaySol(casella_b **fin,tile *val,int r,int c){
             }
             
         }
-        printf("Max somma:%d\n", PT_MAX);
+        
     }
+    printf("Max somma:%d\n", PT_MAX);
 
 }
 void check_pt(casella_b ** sol,casella_b **fin,tile * val,int r,int c){
