@@ -39,7 +39,7 @@ Item cancellazione1(link *head, char *key);
 Item cancellazione2(link *head,date data1,date data2);
 void liberaLista(link head);
 void stampafile(link head);
-date inserimentoData();
+void inserimentoData(date data);
 Item inserimentoItem();
 //MAIN
 int main(){
@@ -51,14 +51,13 @@ int main(){
   liberaLista(head);
 }
 //Funzioni
-date inserimentoData(date data){
+void inserimentoData( date data){
   printf("Inserisci giorno:");
-  scanf("%d",data.gg);
+  scanf("%d",&data.gg);
   printf("Inserisci mese:");
-  scanf("%d",data.mm);
+  scanf("%d",&data.mm);
   printf("Inserisci anno:");
-  scanf("%d",data.aaaa);
-  return data;
+  scanf("%d",&data.aaaa);
 }
 link insertSorted(link head,Item val){
   link x,p;
@@ -106,15 +105,14 @@ link newNode(Item val,link h){
 link menu(link head){
   char codice[N];
   date data1,data2;
-  Item val;
-  Item t;
-  int stop = 0;
+  Item val,t;
+  int stop = 0,flag = 0;
   comando_c c;
   while(stop ==0){
     c = scelta();
     switch(c){
         case tastiera:
-            val = inserimentoItem(); //
+            val = inserimentoItem(); 
             head = insertNode(head,val);
             stampaLista(head);
             break;
@@ -126,30 +124,34 @@ link menu(link head){
             printf("Inserisci il codice da ricercare:");
             scanf("%s",codice);
             t = ricercaCodice(&head,codice);
-            stampaItem(t);
+            if(strcmp(t.codice,"") != 0) stampaItem(t);
+            else printf("Non esiste un nodo con questo codice");
             break;
         case canc1:
             printf("Inserisci il codice da ricercare:");
             scanf("%s",codice);
             t = cancellazione1(&head,codice);
             if(strcmp(t.codice,"") != 0) stampaItem(t);
+            else printf("Non esiste un nodo con questo codice");
             stampaLista(head);
             break;
         case canc2:
-        // da sistemare
-            data1 = inserimentoData(data1);
-            data2 = inserimentoData(data2);
+            printf("Data1\n");
+            inserimentoData(data1);
+            printf("Data2\n");
+            inserimentoData(data2);
+            // aggiustare sto ciclo
             do{
                 t = cancellazione2(&head,data1,data2);
-                stampaItem(t);
-            }while(strcmp(t.codice,"") != 0); // da capire come trasformare le condziioni di null
+                if(strcmp(t.codice,"") != 0)stampaItem(t);
+            }while(strcmp(t.codice,"") != 0);
             break;
         case stampaf:
             stampafile(head);
             break;
         case fine: 
             stop = 1;
-        default: printf("Inserimento errato,riprovare");
+        default: printf("Inserimento errato,riprovare \n");
             break;
     }
   }
