@@ -1,4 +1,4 @@
-#include <inventario.h>
+#include "inventario.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,12 +9,16 @@ struct tab_l{
     link tail;
     int n_pg;
 }
+typedef struct {
+    int inUso;
+    ogg *vett_equ = NULL;
+}equip;
 typedef struct{
     char codice[N];
     char nome[N];
     char classe [N];
     stat statistiche;
-    inv equipaggiamento;
+    equip equipaggiamento; // è un'altra struct che deve contenere dei riferimenti a sdegli oggeti preosenti all'interno 
 }pg;
 struct node{
     Item val;
@@ -26,6 +30,65 @@ typedef struct{
 }Item;
 // valutare se fare le wrapper, se dovessi fare le wrapper allora posso scegliere di fare delle funzioni
 // di creazione dei due puntatori opachi che mi gestiscono le struct in maniera piu trasparent
+void inserimentoEqu_l(pg personaggio,char *nome,tabInv_t tabInv){
+    int i = 0;
+    for(i = 0;i<tabInv->n_oggetti;i++){
+        if(strcmp(nome,tabInv->inv[i].nome) == 0){
+            if(personaggio.equipaggiamento.vett_equ == NULL){
+                personaggio.equipaggiamento.vett_equ = malloc(personaggio.equipaggiamento.inUso+1 * sizeof(ogg));
+                personaggio.equipaggiamento.vett_equ[personaggio.equipaggiamento.inUso] = tabInv->inv[i];
+                personaggio.equipaggiamento.inUso = 1;
+            }else{
+                realloc(personaggio.equipaggiamento.vett_equ,personaggio.equipaggiamento.inUso+1 * sizeof(ogg));
+                personaggio.equipaggiamento.vett_equ[personaggio.equipaggiamento.inUso] = tabInv->inv[i];
+                personaggio.equipaggiamento.inUso++;
+            }
+        }
+    }
+    
+
+}
+void eliminaEqu_l(pg personaggio,char *nome){
+     int i = 0;
+    for(i = 0;i<tabInv->n_oggetti;i++){
+        if(strcmp(nome,tabInv->inv[i].nome) == 0){
+            if(personaggio.equipaggiamento.vett_equ == NULL){
+                printf("L'oggetto non è presente nella lista di equipaggiamenti di quel personaggio");
+            }else{
+                //ricerca l'oggetto nell'equipaggiamento
+                personaggio.equipaggiamento.inUso--;
+            }
+        }
+    }
+
+}
+void eliminaEq(lista l_pg){
+    char *codice,*nome;
+    link x;
+    printf("Inserisci il codice del personaggio da cui vuoi eliminare l'oggetto:");
+    scanf("%s",codice);
+    printf("Inserisci il nome dell'oggetto da eliminare:");
+    scanf("%s",nome);
+    for(x = l_pg->head;x!= NULL && strcmp(x->val.codice,codice) != 0 ;x = x->next) 
+    if(x != NULL){
+        eliminaEqu_l(x,nome);
+    }else printf("Non è stato trovato alcun oggetto");
+
+}
+void inserimentoEqu(lista l_pg,tabInv_t tabInv){
+    char *codice,*nome;
+    link x;
+    printf("Inserisci il codice del personaggio nel quale vuoi inserire l'oggetto:");
+    scanf("%s",codice);
+    printf("Inserisci il nome dell'oggetto da inserire:");
+    scanf("%s",nome);
+    for(x = l_pg->head;x!= NULL && strcmp(x->val.codice,codice) != 0 ;x = x->next) 
+    if(x != NULL){
+        inserimentoEqu_l(x,nome,tabInv);
+    }else printf("Non è stato trovato alcun oggetto");
+    
+
+}
 
 void caricaPg_l(link *head,link *tail,int n*){ // fatto
     FILE *fp;
@@ -35,22 +98,23 @@ void caricaPg_l(link *head,link *tail,int n*){ // fatto
         printf("Errore nell'apertura del file");
         exit(1);
     }
-    //,&val.personaggio.statistiche.
     while(!feof(fp)){
         if(!feof(fp)){
-            fscanf(fp,"%s %s %s %d %d %d %d %d %d",val.personaggio.codice,val.personaggio.nome,val.personaggio.classe); // da inserire le altre statistiche
+            fscanf(fp,"%s %s %s %d %d %d %d %d %d",val.personaggio.codice,val.personaggio.nome,val.personaggio.classe,&val.personaggio.statistiche.hp,&val.personaggio.statistiche.mp,&val.personaggio.statistiche.atk,&val.personaggio.statistiche.def,&val.personaggio.statistiche.mag,&val.personaggio.statistiche.spr); // da inserire le altre statistiche
             //inserimento nel nodo
             inserimentoPersonaggio_l(head,val,tail);
             i++;
         }
     }
     *n = i;
+    fclose(fp);
 }
 void caricaPg(lista l_pg){
     caricaPg_l(&l_pg->head,&l_pg->tail,&l_pg->n_pg)
 }
-Item inserimentoItem(){ // finire inserimento di item
+Item inserimentoItem(){
     Item val;
+    scanf("%s %s %s %d %d %d %d %d %d",val.personaggio.codice,val.personaggio.nome,val.personaggio.classe,&val.personaggio.statistiche.hp,&val.personaggio.statistiche.mp,&val.personaggio.statistiche.atk,&val.personaggio.statistiche.def,&val.personaggio.statistiche.mag,&val.personaggio.statistiche.spr); // da inserire le altre statistiche
     return val;
 }
 void cancellaPersonaggio(lista l_pg){
@@ -113,19 +177,25 @@ void ricercaPersonaggio_l(link head,char *codice){
     }else printf("Non è stato trovato alcun personaggio");
 
 }
-void stampaPersonaggio_l(pg personaggio){ // da finire
+void stampaPersonaggio_l(pg personaggio){
+    printf("%s %s %s %d %d %d %d %d %d",val.personaggio.codice,val.personaggio.nome,val.personaggio.classe,val.personaggio.statistiche.hp,val.personaggio.statistiche.mp,val.personaggio.statistiche.atk,val.personaggio.statistiche.def,val.personaggio.statistiche.mag,val.personaggio.statistiche.spr);
 }
 void modificaEqu(lista l_pg){
     char *codice;
+    char *nome_equ;
     printf("Inserisci il codice del personaggio da ricercare :");
     scanf("%s",codice);
-    modificaEqu_l(l_pg->head,codice)
+    printf("Inserisci il nome dell'oggetto da equipaggiare :");
+    scanf("%s",nome_equ);
+    modificaEqu_l(l_pg->head,codice,nome_equ);
 }
-void modificaEqu_l(link head,char *codice){
+void modificaEqu_l(link head,char *codice,char *nome_equ){
     link x;
     for(x = head;x != NULL && strcmp(x.val.personaggio.codice,codice) != 0 ;x = x->next)
     if(x != NULL){
-        //finisco funzione di modifica dell'equipaggiamento
+        //controllo se quell'oggetto non è stato equipaggiato
+
+        
     }else printf("Non è stato trovato alcun personaggio");
 
 }

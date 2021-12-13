@@ -21,11 +21,6 @@ struct inventario{
     int n_oggetti;
     int max_oggetti;
 };
-void caricaOggetti(tabInv_t tabInv);
-void stampaOggetto_i(ogg oggetto);
-void stampaOggetto(tabInv_t tabInv);
-void ricercaOggetto_i(tabInv_t tabInv,char *nome);
-void ricercaOggetto(tabInv_t tabInv);
 tabInv_t initInv(){
     tabInv_t tabInv;
     tabInv->n_oggetti = 0;
@@ -45,6 +40,7 @@ void caricaOggetti(tabInv_t tabInv){
         fscanf(fp,"%s %s %d %d %d %d %d %d",tabInv->inv[i].nome,tabInv->inv[i]->tipologia,&tabInv->inv[i].modificatore.hp,&tabInv->inv[i].modificatore.mp,&tabInv->inv[i].modificatore.atk,&tabInv->inv[i].modificatore.def,&tabInv->inv[i].modificatore.mag,&tabInv->inv[i].modificatore.spr);
         i++;
     }
+    fclose(fp);
 }
 void stampaOggetto_i(ogg oggetto){
     printf("%s %s %d %d %d %d %d %d",oggetto.nome,oggetto.tipologia,oggetto.modificatore.hp,oggetto.modificatore.mp,oggetto.modificatore.atk,oggetto.modificatore.def,oggetto.modificatore.mag,oggetto.modificatore.spr);
