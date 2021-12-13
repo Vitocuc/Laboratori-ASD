@@ -31,17 +31,17 @@ struct node{
 
 // valutare se fare le wrapper, se dovessi fare le wrapper allora posso scegliere di fare delle funzioni
 // di creazione dei due puntatori opachi che mi gestiscono le struct in maniera piu trasparent
-link newNode(link head,Item val){ // fatto
+link newNode(link h,Item val){ // fatto
     link x;
     x = malloc(sizeof(link));
     x->val = val;
-    x->next = NULL;
+    x->next = h;
     return x;
 }
 
 void stampaPersonaggio_l(pg personaggio){//fatto
     int i = 0;
-    printf("%s %s %s %d %d %d %d %d %d",personaggio.codice,personaggio.nome,personaggio.classe,personaggio.statistiche.hp,personaggio.statistiche.mp,personaggio.statistiche.atk,personaggio.statistiche.def,personaggio.statistiche.mag,personaggio.statistiche.spr);
+    printf("%s %s %s %d %d %d %d %d %d \n",personaggio.codice,personaggio.nome,personaggio.classe,personaggio.statistiche.hp,personaggio.statistiche.mp,personaggio.statistiche.atk,personaggio.statistiche.def,personaggio.statistiche.mag,personaggio.statistiche.spr);
     for(i = 0;i<personaggio.e->inUso;i++)
         stampaOggetto_i(personaggio.e->vett_equ[i]);
 }
@@ -119,12 +119,13 @@ void inserimentoEqu(lista l_pg,tabInv_t tabInv){
         inserimentoEqu_l(x->val.personaggio,nome,tabInv);
     }else printf("Non è stato trovato alcun oggetto");
 }
-void inserimentoPersonaggio_l(link *head,Item val,link *tail,int *n_pg){ // fatto
-    if(*head == *tail){
-        (*head)->next = newNode(NULL,val);
-        *tail = (*head)->next;
+void inserimentoPersonaggio_l(link *head,Item val,link *tail,int *n_pg){ // fatto;
+    if(*head == NULL){
+        *head = *tail = newNode(NULL,val);
     }else{
+        printf(" ciao");
         (*tail)->next = newNode(NULL,val);
+        *tail = (*tail)->next;
     }
     *n_pg++;
 }
@@ -132,16 +133,20 @@ void caricaPg_l(link *head,link *tail,int *n){ // fatto
     FILE *fp;
     Item val;
     int i = 0;
-    if((fp = fopen("personaggi.txt","r"))== NULL){
+    if((fp = fopen("pg.txt","r"))== NULL){
         printf("Errore nell'apertura del file");
         exit(1);
     }
+    
     while(!feof(fp)){
         if(!feof(fp)){
+            if(val.personaggio.e != NULL) {realloc(val.personaggio.e,sizeof(tab_eq));  }
+            else val.personaggio.e = malloc(sizeof(tab_eq));
             fscanf(fp,"%s %s %s %d %d %d %d %d %d",val.personaggio.codice,val.personaggio.nome,val.personaggio.classe,&val.personaggio.statistiche.hp,&val.personaggio.statistiche.mp,&val.personaggio.statistiche.atk,&val.personaggio.statistiche.def,&val.personaggio.statistiche.mag,&val.personaggio.statistiche.spr);
             val.personaggio.e->inUso = 0;
             val.personaggio.e->vett_equ = NULL;
             inserimentoPersonaggio_l(head,val,tail,n);
+            stampaPersonaggio_l((*head)->val.personaggio);
             i++;
         }
     }
@@ -220,7 +225,9 @@ void modificaEqu(lista l_pg){
     modificaEqu_l(l_pg->head,codice,nome_equ);
 }
 lista initList(){
-    lista l_pg;
+    lista l_pg = malloc(sizeof(lista));
+    l_pg->head = malloc(sizeof(link));
+    l_pg->tail = malloc(sizeof(link));
     l_pg->head = NULL;
     l_pg->tail = NULL;
     l_pg->n_pg = 0;

@@ -1,10 +1,6 @@
 #ifndef PG
- #define PG 1
-#endif
+#define PG 
 #include "inventario.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 typedef struct node *link;
 typedef struct tab_l *lista;
 typedef struct equip *tab_eq;
@@ -31,7 +27,7 @@ struct node{
     Item val;
     link next;
 };
-link newNode(link head,Item val);
+link newNode(link h,Item val);
 void stampaPersonaggi(lista l_pg);
 void stampaPersonaggio_l(pg personaggio);
 void stampaPersonaggio(lista l_pg);
@@ -45,9 +41,10 @@ void caricaPg(lista l_pg);
 Item inserimentoItem();
 void cancellaPersonaggio_l(link *head,char *codice,int *n);
 void cancellaPersonaggio(lista l_pg);
-void ricercaPersonaggio_l(link head,char *codice):
+void ricercaPersonaggio_l(link head,char *codice);
 void inserimentoPersonaggio(lista l_pg);
 void ricercaPersonaggio(lista l_pg);
 void modificaEqu_l(link head,char *codice,char *nome_equ);
 void modificaEqu(lista l_pg);
 lista initList();
+#endif

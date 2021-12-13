@@ -1,13 +1,18 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "pg.h"
-void menu(lista personaggi,tabInv_t inventario);
 int main(){
     lista personaggi;
     tabInv_t inventario;
-    personaggi = initList();
-    caricaPg(personaggi);
-    stampaPersonaggi(personaggi);
     /*
+    personaggi = initList();
+    caricaPg(personaggi);*/
+    //stampaPersonaggi(personaggi);
     inventario = initInv();
     caricaOggetti(inventario);
-    menu(personaggi);*/
+    stampaOggetti(inventario);
+    ricercaOggetto(inventario);
+    /*
+    menu(personaggi,inventario);*/
+    return 0;
 }
