@@ -38,6 +38,7 @@ link newNode(link head,Item val){ // fatto
     x->next = NULL;
     return x;
 }
+
 void stampaPersonaggio_l(pg personaggio){//fatto
     int i = 0;
     printf("%s %s %s %d %d %d %d %d %d",personaggio.codice,personaggio.nome,personaggio.classe,personaggio.statistiche.hp,personaggio.statistiche.mp,personaggio.statistiche.atk,personaggio.statistiche.def,personaggio.statistiche.mag,personaggio.statistiche.spr);
@@ -55,6 +56,11 @@ void stampaPersonaggio(lista l_pg){
 
     }else printf("Non è stato trovato alcun personaggio da stampare");
 }
+void stampaPersonaggi(lista l_pg){
+    link x ;
+    for( x= l_pg->head ;x != NULL;x = x->next)
+        stampaPersonaggio_l(x->val.personaggio);
+} 
 void inserimentoEqu_l(pg personaggio,char *nome,tabInv_t tabInv){//fatto
     int i = 0;
     for(i = 0;i<tabInv->n_oggetti;i++){

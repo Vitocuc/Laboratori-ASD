@@ -5,9 +5,9 @@ int main(){
     tabInv_t inventario;
     personaggi = initList();
     caricaPg(personaggi);
+    stampaPersonaggi(personaggi);
+    /*
     inventario = initInv();
     caricaOggetti(inventario);
-    menu(personaggi);
-}
-void menu(lista personaggi,tabInv_t inventario){
+    menu(personaggi);*/
 }

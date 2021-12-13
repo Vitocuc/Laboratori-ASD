@@ -32,6 +32,7 @@ struct node{
     link next;
 };
 link newNode(link head,Item val);
+void stampaPersonaggi(lista l_pg);
 void stampaPersonaggio_l(pg personaggio);
 void stampaPersonaggio(lista l_pg);
 void inserimentoEqu_l(pg personaggio,char *nome,tabInv_t tabInv);
