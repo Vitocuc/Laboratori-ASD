@@ -1,4 +1,5 @@
 #include "pg.h"
+void menu(lista personaggi,tabInv_t inventario);
 int main(){
     lista personaggi;
     tabInv_t inventario;
@@ -8,5 +9,5 @@ int main(){
     caricaOggetti(inventario);
     menu(personaggi);
 }
-vodi menu(lista personaggi,tabInv_t inventario){
+void menu(lista personaggi,tabInv_t inventario){
 }
