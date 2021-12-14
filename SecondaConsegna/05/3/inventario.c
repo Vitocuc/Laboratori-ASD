@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define N 51
+#define N_ele 8
 typedef struct inventario *tabInv_t;
 typedef struct{
     int hp;
@@ -24,21 +25,22 @@ struct inventario{
 tabInv_t initInv(){
     tabInv_t tabInv;
     tabInv = malloc(sizeof(tabInv_t));
-    tabInv->n_oggetti = 0;
-    tabInv->max_oggetti = 0;
+    tabInv->n_oggetti;
+    tabInv->inv = NULL;
+    tabInv->max_oggetti;
     return tabInv;
 }
-void caricaOggetti(tabInv_t tabInv){
+void caricaOggetti(tabInv_t *tabInv){
     FILE *fp;
     int n_oggetti,i = 0;
     if((fp = fopen("inventario.txt","r") ) == NULL){
         printf("Errore nell'apertura del file");
         exit(1);
     }
-    fscanf(fp,"%d",&tabInv->n_oggetti);
-    tabInv->inv = malloc(tabInv->n_oggetti*sizeof(ogg));
-    while(i<tabInv->n_oggetti){
-        fscanf(fp,"%s %s %d %d %d %d %d %d",tabInv->inv[i].nome,tabInv->inv[i].tipologia,&tabInv->inv[i].modificatore.hp,&tabInv->inv[i].modificatore.mp,&tabInv->inv[i].modificatore.atk,&tabInv->inv[i].modificatore.def,&tabInv->inv[i].modificatore.mag,&tabInv->inv[i].modificatore.spr);
+    fscanf(fp,"%d",&(*tabInv)->n_oggetti);
+    (*tabInv)->inv = malloc((*tabInv)->n_oggetti*sizeof(ogg));
+    while(i<(*tabInv)->n_oggetti){
+        fscanf(fp,"%s %s %d %d %d %d %d %d",(*tabInv)->inv[i].nome,(*tabInv)->inv[i].tipologia,&(*tabInv)->inv[i].modificatore.hp,&(*tabInv)->inv[i].modificatore.mp,&(*tabInv)->inv[i].modificatore.atk,&(*tabInv)->inv[i].modificatore.def,&(*tabInv)->inv[i].modificatore.mag,&(*tabInv)->inv[i].modificatore.spr);
         i++;
     }
     fclose(fp);
