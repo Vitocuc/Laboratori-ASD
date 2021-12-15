@@ -14,6 +14,8 @@ int main(){
     inventario = initInv();
     menu(&personaggi,&inventario);
     stampaPersonaggi(personaggi);
+    liberaInventario(inventario);
+    liberaPersonaggi(personaggi);
     return 0;
 }
 comando_c scelta(){

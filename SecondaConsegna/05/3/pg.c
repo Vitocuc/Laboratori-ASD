@@ -269,3 +269,15 @@ lista initList(){
     l_pg->n_pg = 0;
     return l_pg;
 }
+void liberaPersonaggi(lista l_pg){
+    link x,p;
+    for(x = l_pg->head->next,p = l_pg->head;x!= l_pg->tail;p = x,x = x->next){
+        free(p->val.personaggio.e->vett_equ);
+        free(p->val.personaggio.e);
+        free(p);
+    }
+    free(l_pg->tail->val.personaggio.e->vett_equ);
+    free(l_pg->tail->val.personaggio.e);
+    free(l_pg->tail);
+    free(l_pg);
+}

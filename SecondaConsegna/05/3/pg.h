@@ -45,5 +45,6 @@ void ricercaPersonaggio_l(link head,char *codice);
 void inserimentoPersonaggio(lista *l_pg);
 void ricercaPersonaggio(lista l_pg);
 void calcolaStatistiche(lista l_pg);
+void liberaPersonaggi(lista l_pg);
 lista initList();
 #endif

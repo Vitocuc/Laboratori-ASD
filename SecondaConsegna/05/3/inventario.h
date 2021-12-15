@@ -24,6 +24,7 @@ struct inventario{
 tabInv_t initInv();
 void stampaOggetti(tabInv_t tabInv);
 void caricaOggetti(tabInv_t *tabInv);
+void liberaInventario(tabInv_t tabInv);
 void stampaOggetto_i(ogg oggetto);
 void stampaOggetto(tabInv_t tabInv);
 void ricercaOggetto_i(tabInv_t tabInv,char *nome);
