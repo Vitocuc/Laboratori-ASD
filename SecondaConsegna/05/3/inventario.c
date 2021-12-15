@@ -24,7 +24,7 @@ struct inventario{
 };
 tabInv_t initInv(){
     tabInv_t tabInv;
-    tabInv = malloc(sizeof(tabInv_t));
+    tabInv = malloc(sizeof(*tabInv));
     tabInv->n_oggetti;
     tabInv->inv = NULL;
     tabInv->max_oggetti;
@@ -82,8 +82,7 @@ void stampaOggetti(tabInv_t tabInv){
     int i = 0;
     for(i = 0;i<tabInv->n_oggetti;i++) stampaOggetto_i(tabInv->inv[i]);
 }
-void liberaOggetti(tabInv_t tabInv){
+void liberaInventario(tabInv_t tabInv){
     free(tabInv->inv);
     free(tabInv);
-    
 }

@@ -261,9 +261,9 @@ void calcolaStatistiche(lista l_pg){
     }else printf("Non è stato trovato il personaggio \n");
 }
 lista initList(){
-    lista l_pg = malloc(sizeof(lista));
-    l_pg->head = malloc(sizeof(link));
-    l_pg->tail = malloc(sizeof(link));
+    lista l_pg = malloc(sizeof(*l_pg));
+    l_pg->head = malloc(sizeof(*l_pg->head));
+    l_pg->tail = malloc(sizeof(*l_pg->tail));
     l_pg->head = NULL;
     l_pg->tail = NULL;
     l_pg->n_pg = 0;
