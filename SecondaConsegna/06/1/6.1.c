@@ -5,18 +5,19 @@ typedef struct{
     int inizio;
     int fine;
 }att;
-void displaySol(att *v,int *dp,int n);
+void displaySol(att *val,int n,int *cont,int *dp);
+void displaySol_R(att *val,int *cont,int max,int *dp);
 int intersezione(att v1,att v2);
 void dp_lis(att *v, int n);
 void swap(att *v,int i,int j);
 void ord_v(att *v,int n);
 void leggiFile(att **v,int *n,char *s); 
-int main(){
+int main(int argc,char **argv){
     int n;
     att *v;
-    leggiFile(&v,&n,"att.txt");
+    if(argc<2) return 1;
+    leggiFile(&v,&n,argv[1]);
     dp_lis(v,n);
-    
 }
 void leggiFile(att **v,int *n,char *s){
     FILE *fp; 
@@ -36,28 +37,42 @@ void leggiFile(att **v,int *n,char *s){
     *n = n1;
     fclose(fp);
 }
-void dp_lis(att *v, int n){
-    int dif[n+1],dp[n+2]; // inserisco n+1 per poter stampare la soluzione
-    int i,j = 0;
+void dp_lis(att *v,int n){
+    int i,j,*dp,*cont;
+    dp = malloc(n*sizeof(int));
+    cont = malloc(n*sizeof(int));
     ord_v(v,n);
-    memset(dp,0,(n+2)*sizeof(int));
-    dp[0] = 0; // stato fittizio per stampare la soluzione
-    dp[1] = v[0].fine - v[0].inizio;//suppongo primo elemento gia preso
-    for(i = 1;i<=n;i++){ 
-        dp[i] = v[i-1].fine - v[i-1].inizio;
-        for(j = 1;j<=n;j++){
-            if((intersezione(v[i-1],v[j-1]) == 0) && dp[i]<dp[j]+1) dp[i] += dp[j]+1; 
-            else if(dp[i]<=dp[j]) dp[i] = dp[j]; // non ha senso verificare se ha intersezione
+    dp[0] = v[0].fine-v[0].inizio;
+    cont[0] = -1;
+    for(i = 1;i<n;i++){
+        dp[i] = v[i].fine-v[i].inizio;
+        for(j = i-1;j>=0;j--){
+            if((intersezione(v[j],v[i]) == 0)){
+                if(dp[j]+v[i].fine-v[i].inizio>dp[i]){
+                    dp[i] = dp[j]+ v[i].fine-v[i].inizio;
+                    cont[i] = j;
+                }  
+            }
+            if(dp[i] == v[i].fine-v[i].inizio) cont[i] = -1;
         }
     }
-    displaySol(v,dp,n);
-    
+    displaySol(v,n,cont,dp);
+    free(dp);
+    free(cont);
 }
-void displaySol(att *v,int *dp,int n){
-        int i;
-        for(i = n;i>=1;i--)
-            if(dp[i] != dp[i-1]) printf("(%d,%d) ",v[i-1].inizio,v[i-1].fine);
-        printf("La massima lunghezza e': %d",dp[n]);
+void displaySol(att *val,int n,int *cont,int *dp){
+    int i = 0, max = 0;
+    for(i = 0;i<n;i++){
+        if(dp[i]>dp[max]) max = i;
+    }
+    displaySol_R(val,cont,max,dp);
+}
+void displaySol_R(att *val,int *cont,int max,int *dp){
+    if(max == -1){
+        return;
+    }
+    displaySol_R(val,cont,cont[max],dp);
+    printf("(%d,%d) ",val[max].inizio,val[max].fine);
 }
 int intersezione(att v1,att v2){
     if(v1.inizio<v2.fine && v2.inizio<v1.fine) return 1;
@@ -73,11 +88,6 @@ void ord_v(att *v,int n){
     int i,j;
     for(i = 0;i<n;i++){
         for(j = i+1;j<n;j++)
-            if(v[j].inizio<v[i].inizio) swap(v,i,j);
-    }
-    for(i = 0;i<n-1;i++){
-        if(v[i].inizio == v[i+1].inizio){
-            if(v[i].fine < v[i+1].fine) swap(v,i,i+1);
-        }
+            if(v[j].fine<v[i].fine) swap(v,i,j);
     }
 }
