@@ -1,5 +1,5 @@
-#ifndef ST
-#define ST 
+#ifndef STable
+#define STable
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,15 +13,14 @@ typedef struct{
     elab elaboratore;
 }ItemSt;
 ST STinit(int maxN);
-static ItemSt ItemSetVoid();
 void STfree(ST st);
 int STcount(ST st);
 char *Keyget(elab e);
 int Keycmp(char *s1,char *s2);
-static void STinsert(ST st,elab e);
-static ItemSt STsearch(ST st,char *key);
+void STinsert(ST st,elab e);
+elab STsearch(ST st,char *key);
 void STdelete(ST st,char *key);
-static ItemSt STselect(ST st, int i);
+elab STselect(ST st, int i);
 void STdisplay(ST st);
 int getIndex(ST st,char *key);
 #endif

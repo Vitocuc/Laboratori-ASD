@@ -1,12 +1,12 @@
-#include <st.h>
-typedef struct{
-    elab elaboratore;
-}ItemSt;
+#include "st.h"
 struct symboltable{
     ItemSt *a;
     int maxN;
     int size;
 };
+typedef struct{
+    elab elaboratore;
+}ItemSt;
 static ItemSt ItemSetVoid(){
     ItemSt c;
     strcpy(c.elaboratore.id_elab,"");
@@ -58,8 +58,9 @@ static ItemSt searchR(ST st,int l,int r,char* key){ // ricerca ricorsiva
     if(Keycmp(key,Keyget(st->a[m])) == -1) return searchR(st,l,m-1,key);
     else return searchR(st,m+1,r,key);
 }
-static ItemSt STsearch(ST st,char *key){
-    return searchR(st,0,st->size-1,key);
+static elab STsearch(ST st,char *key){
+    ItemSt e = searchR(st,0,st->size-1,key);
+    return e.elaboratore;
 }
 void STdelete(ST st,char *key){
     int h = getIndex(st,0,st->size--,key);
@@ -68,8 +69,9 @@ void STdelete(ST st,char *key){
         st->size--;
     }
 }
-static ItemSt STselect(ST st, int i){
-    return st->a[i];
+static elab STselect(ST st, int i){
+    ItemSt e = st->a[i];
+    return e.elaboratore
 }
 void STdisplay(ST st){
     int i = 0;
