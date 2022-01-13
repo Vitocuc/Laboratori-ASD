@@ -5,17 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(gdb) Launch",
+            "name": "(gdb) Associa",
             "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/TerzaConsegna/L_08/E01/8.1.exe",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": true,
+            "request": "attach",
+            "program": "immettere il nome del programma, ad esempio ${workspaceFolder}/a.exe",
+            "processId": "${command:pickProcess}",
             "MIMode": "gdb",
-            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
+            "miDebuggerPath": "/path/to/gdb",
             "setupCommands": [
                 {
                     "description": "Abilita la riformattazione per gdb",
@@ -24,40 +20,17 @@
                 }
             ]
         },
-    {
-        "name": "(gdb) Avvio Bash in Windows",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "immettere il nome del programma, ad esempio ${workspaceFolder}/a.exe",
-        "args": [],
-        "stopAtEntry": false,
-        "cwd": "${fileDirname}",
-        "environment": [],
-        "externalConsole": false,
-        "pipeTransport": {
-            "debuggerPath": "/usr/bin/gdb",
-            "pipeProgram": "${env:windir}\\system32\\bash.exe",
-            "pipeArgs": ["-c"],
-            "pipeCwd": ""
-        },
-        "setupCommands": [
-            {
-                "description": "Abilita la riformattazione per gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ]
-    },
         {
             "name": "gcc.exe - Compila ed esegui il debug del file attivo",
             "type": "cppdbg",
             "request": "launch",
+            //"program": "${fileDirname}\\a.exe",
             "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}\\",
+            "cwd": "${fileDirname}",
             "environment": [],
-            "externalConsole": false,
+            "externalConsole": true,
             "MIMode": "gdb",
             "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
             "setupCommands": [

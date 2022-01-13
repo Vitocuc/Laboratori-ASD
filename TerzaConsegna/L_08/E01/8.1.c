@@ -8,9 +8,8 @@ void menu(List l,char *file);
 int main(int argc,char **argv){
     if(argc>2) return 1;
     List l;
-     leggiFile(argv[1],&l);
-     ricercaQuotazione(l);
-    //menu(l,argv[1]);
+     
+    menu(l,argv[1]);
     return 0;
 }
 link ricercaTitolo(List l){
@@ -68,7 +67,7 @@ void menu(List l,char *file){
                     printf("Non e' stato trovato nessun titolo\n");
                 break;
             case 3:
-                printf("ciao");
+                ricercaQuotazione(l);
                 break;
             /*
             case 4:

@@ -17,10 +17,10 @@ static link newEdge(int v,int wt,link next){
 Graph GraphInit(int V){
     Graph g = malloc(sizeof(*g));
     //alloco la matrice di adiacenze
-    g->madj = (V);
+    g->madj = allocMadj(V);
     g->V = V;
     g->E = 0;
-    g->z = newEdge(-1,-1,NULL);
+    //g->z = newEdge(-1,-1,NULL);
     g->tab = STinit(V);
     return g;
 }
