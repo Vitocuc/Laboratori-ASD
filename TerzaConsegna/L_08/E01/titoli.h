@@ -39,6 +39,7 @@ typedef struct {
 }Item;
 //FUNZIONi LISTA
 List initLista(int n);
+void stampaCodice(Titolo t);
 date inserisciData();
 link SearchList(List l,char *nome);
 date keyGet(Item item);
@@ -48,20 +49,26 @@ void caricaTransazione(Titolo t,transazione trans);
 link newNode(Titolo t,link next);
 List inserimentoOrdinato(List l,Titolo t);
 Titolo setTitoloVoid();
+void stampaLista(List l);
+void aggiornaLista(List l);
 //FUNZIONI BST
 BST BSTinit();
-static edge New(Item item,edge l,edge r);
+void inserisciQuotazione(BST bst,transazione trans);
+static edge New(Item item,edge p,edge l,edge r,int n_nodi);
 Item ItemSetNull();
 int compareItem(Item i1,Item i2);
 void BSTfree(BST bst);
 int bstCount(BST bst);
 int bstEmpty(BST bst);
+edge updateBstR(BST bst,edge h,edge z,Item i);
 Item BSTSearch(BST bst,date key);
 Item BSTmax(BST bst);
 Item BSTSearchperTitolo(link x,date data);
 Item BSTmin(BST bst);
 void inserimentoFoglia(BST bst,Item item);
-void aggiornaQuotazioneBST(BST bst,transazione trans);
-void visitInOrder(edge root);
-void calcolaQuotazioni(BST bst);
+void stampaBst(BST bst);
+void aggiornaQuotazioni(BST bst);
+void ricercaMinMaxBST(link x,int *min,int *max,date data1,date data2);
+date minInBst(link x);
+date maxInBst(link x);
 #endif
