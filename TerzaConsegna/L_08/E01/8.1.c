@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "titoli.h"
 void leggiFile(char *file,List *l1);
+void calcolaSoglia(link x,int *massimo,int *minimo);
 void ricercaMinMaxbyDate(List l);
 void ricercaMinMaxinTitolo(List l);
 void ricercaQuotazione(List l);
@@ -77,9 +78,16 @@ void bilanciamento(List l){
         s2 = max/min;
         if(s2>s){//faccio il bilanciamento rispetto alla mediana
             balance(x);
-            printf("Bilanciamento fatto");  
+            printf("Bilanciamento fatto");
+            heightMax(x,&max);
+            heightMin(x,&min);  
         }
+
     }
+}
+void calcolaSoglia(link x,int *massimo,int *minimo){
+    heightMax(x,massimo);
+    heightMin(x,minimo);
 }
 void menu(List l,char *file){
     int scelta,flag = 0;

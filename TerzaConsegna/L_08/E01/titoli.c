@@ -150,10 +150,6 @@ void heightMin(link x,int *minimo){
     (*minimo) = heightm(x->val->quotazioni->root,x->val->quotazioni->z);
     printf("\nL'altezza minima e': %d \n",(*minimo));
 }
-void calcolaSoglia(link x,int *massimo,int *minimo){
-    heightMax(x,massimo);
-    heightMin(x,minimo);
-}
 int bstCountR(edge h,edge z){
     if(h == z) return 0;
     return bstCountR(h->l,z)+bstCountR(h->r,z)+1;

@@ -71,6 +71,7 @@ void aggiornaQuotazioni(BST bst);
 void ricercaMinMaxBST(link x,int *min,int *max,date data1,date data2);
 date minInBst(link x);
 date maxInBst(link x);
-void calcolaSoglia(link x,int *massimo,int *minimo);
+void heightMax(link x,int *massimo);
+void heightMin(link x,int *minimo);
 void balance(link x);
 #endif
