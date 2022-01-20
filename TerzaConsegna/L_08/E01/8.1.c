@@ -5,6 +5,7 @@ void ricercaMinMaxbyDate(List l);
 void ricercaMinMaxinTitolo(List l);
 void ricercaQuotazione(List l);
 link ricercaTitolo(List l);
+void bilanciamento(List l);
 void menu(List l,char *file);
 int main(int argc,char **argv){
     if(argc>2) return 1;
@@ -26,7 +27,6 @@ void ricercaMinMaxinTitolo(List l){
     }
     printf("Il minimo e': %d",min);
     printf("Il massimo e': %d",max);
-
 }
 link ricercaTitolo(List l){
     char titolo[MAXLEN];
@@ -67,6 +67,20 @@ void ricercaMinMaxbyDate(List l){
     printf("Il minimo e': %d \n",min);
     printf("Il massimo e': %d \n",max);  
 }
+void bilanciamento(List l){
+    link x = ricercaTitolo(l);
+    int s = 0,max,min,s2 = 0;
+    if(x != NULL){
+        printf("Inserisci la soglia : ");
+        scanf("%d",&s);
+        calcolaSoglia(x,&max,&min);
+        s2 = max/min;
+        if(s2>s){//faccio il bilanciamento rispetto alla mediana
+            balance(x);
+            printf("Bilanciamento fatto");  
+        }
+    }
+}
 void menu(List l,char *file){
     int scelta,flag = 0;
     link x;
@@ -102,10 +116,10 @@ void menu(List l,char *file){
                 ricercaMinMaxinTitolo(l);
                 break;
             case 6:
+                bilanciamento(l);
                 break;
             case 0:
                 flag = 1;
-                
                 break;
             default:
                 printf("Errore nell'inserimento del comando,ripetere \n");

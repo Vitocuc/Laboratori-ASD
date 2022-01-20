@@ -124,6 +124,36 @@ void BSTfree(BST bst){
     free(bst->z);
     free(bst);
 }
+int heightM(edge h,edge z){
+    int u,v;
+    if(h==z) return 0;
+    u = heightM(h->l,z);
+    v = heightM(h->r,z);
+    if(u>v)
+        return u+1;
+    return v+1;
+}
+int heightm(edge h,edge z){
+    int u,v;
+    if(h == z) return 0;
+    u = heightM(h->l,z);
+    v = heightM(h->r,z);
+    if(u<v)
+        return u+1;
+    return v+1;
+}
+void heightMax(link x,int *massimo){
+    (*massimo) = heightM(x->val->quotazioni->root,x->val->quotazioni->z);
+    printf("\nL'altezza massima e': %d \n",(*massimo));
+}
+void heightMin(link x,int *minimo){
+    (*minimo) = heightm(x->val->quotazioni->root,x->val->quotazioni->z);
+    printf("\nL'altezza minima e': %d \n",(*minimo));
+}
+void calcolaSoglia(link x,int *massimo,int *minimo){
+    heightMax(x,massimo);
+    heightMin(x,minimo);
+}
 int bstCountR(edge h,edge z){
     if(h == z) return 0;
     return bstCountR(h->l,z)+bstCountR(h->r,z)+1;
@@ -323,4 +353,57 @@ date minInBst(link x){
 date maxInBst(link x){
     Item i = BSTmax(x->val->quotazioni);
     return keyGet(i);
+}
+edge rotR(edge h){
+    edge x = h->l;
+    h->l = x->r;
+    x->r->p = h;
+    x->r = h;
+    x->p = h->p;
+    h->p = x;
+    x->n_nodi = h->n_nodi;
+    h->n_nodi = 1;
+    h->n_nodi += (h->l) ? h->l->n_nodi : 0;
+    h->n_nodi += (h->r) ? h->l->n_nodi : 0;
+    return x;
+}
+edge rotL(edge h){
+    edge x = h->r;
+    h->r = x->l;
+    x->l->p = h;
+    x->l = h;
+    x->p = h->p;
+    h->p = x;
+    x->n_nodi = h->n_nodi;
+    h->n_nodi = 1;
+    h->n_nodi += (h->l) ? h->l->n_nodi : 0;
+    h->n_nodi += (h->r) ? h->l->n_nodi : 0;
+    return x;
+}
+edge partR(edge h,int r){
+    int t = h->l->n_nodi;
+    if(t>r){
+        h->l = partR(h->l,r);
+        h = rotR(h);
+    }
+    if(t<r){
+        h->r = partR(h->r,r-t-1);
+        h = rotL(h);
+    }
+    return h;
+}
+static edge balanceR(edge h,edge z){
+    int r;
+    if(h == z) return z;
+    r = (h->n_nodi+1)/2-1; // calcolo della chiave mediana
+    h = partR(h,r); // partizione rispetto alla mediana
+    h->l = balanceR(h->l,z); // bilancio sottolbero sx
+    h->r = balanceR(h->r,z);//bilancio sottoalbero dx
+    return h;
+}
+void BSTbalance(BST bst){
+    bst->root = balanceR(bst->root,bst->z);
+}
+void balance(link x){
+    BSTbalance(x->val->quotazioni);
 }
