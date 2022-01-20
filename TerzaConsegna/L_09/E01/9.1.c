@@ -1,8 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "Graph.h"
+//impostazione algoritmo ricorsivo
 int main(int argc,char **argv){
     if(argc>2) return 1;
     Graph G;
-    G = GraphLoad(argv[1]);//carico il grafo insieme ad una tabella di simboli
+    Edge *vett;
+    FILE *fp;
+    if((fp = fopen(argv[1],"r"))== NULL){
+        printf("Errore nell'apertura del file");
+        exit(1);
+    }
+    G = GRAPHload(fp);
+    fclose(fp);
+    GRAPHedges(G,vett);
 
 }

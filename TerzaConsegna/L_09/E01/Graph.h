@@ -1,22 +1,23 @@
-#ifndef GRAPH
-#define GRAPH
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef GRAPH_H
+#define GRAPH_H
+
 #include "ST.h"
-#define MAXL 31
-typedef struct edge{
-    int v;
-    int w;
-    int wt;
-}Edge;
-//puntatori opachi
-typedef struct grafo *Graph;
-Graph GraphInit(int V);
-void Graphfree(Graph G);
-Graph GraphLoad(char *in_file);
-//FUNZIONI DI CUI HA BISOGNO LA GRAPHLOAD
-static link NEW(int v,link next);
-static Edge EdgeCreate(int v,int w,int wt);
-void insertE(Graph G,Edge e);
-void GraphInsertE(Graph G,int id1,int id2,int wt);
+
+typedef struct edge { int v; int w; int wt; } Edge;
+
+typedef struct graph *Graph;
+
+Graph GRAPHinit(int V);
+void  GRAPHfree(Graph G);
+Graph GRAPHload(FILE *fin);
+void  GRAPHstore(Graph G, FILE *fin);
+int   GRAPHgetIndex(Graph G, char *label);
+void  GRAPHinsertE(Graph G, int id1, int id2, int wt);
+void  GRAPHremoveE(Graph G, int id1, int id2);
+void  GRAPHedges(Graph G, Edge *a);
+void  GRAPHdfs(Graph G, int id);
+int   GRAPHscc(Graph G);
+void  GRAPHspD(Graph G, int id);
+void  GRAPHspBF(Graph G, int id);
+
 #endif

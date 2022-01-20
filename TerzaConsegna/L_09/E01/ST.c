@@ -63,4 +63,4 @@ char *STsearchByIndex(ST st, int i){
     return NULL;
   return (st->a[i]);
 }
-//DATO UN INDICE TROVARE UN CODICE ALFANUMERICO USANDO LA RICERCA BINARIA
+
