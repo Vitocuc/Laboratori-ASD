@@ -9,9 +9,6 @@ typedef struct{
     char id_elab[MAXLEN];
     char id_rete[MAXLEN];
 }elab;
-typedef struct{
-    elab elaboratore;
-}ItemSt;
 ST STinit(int maxN);
 void STfree(ST st);
 int STcount(ST st);

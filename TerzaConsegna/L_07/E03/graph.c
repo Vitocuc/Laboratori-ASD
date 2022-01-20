@@ -20,16 +20,15 @@ Graph GraphInit(int V){
     g->madj = allocMadj(V);
     g->V = V;
     g->E = 0;
-    //g->z = newEdge(-1,-1,NULL);
+    g->z = newEdge(-1,-1,NULL);
     g->tab = STinit(V);
     return g;
 }
 int **allocMadj(int V){
     int **madj,i;
-    madj = malloc(V*sizeof(int *));
-    for(i = 0;i<V;i++) madj2[i] = malloc(V*sizeof(int));
+    madj = calloc(V,sizeof(int *));
+    for(i = 0;i<V;i++) madj[i] = calloc(V,sizeof(int));
     // azzerro tutta la matrice
-    memcpy(madj,0,V*V(sizeof(int)));
     return madj;
 }
 static Edge EdgeCreate(int v,int w,int wt){
@@ -39,15 +38,15 @@ static Edge EdgeCreate(int v,int w,int wt){
 }
 static void removeE(Graph G,Edge e){
     int v = e.v,w = e.w,wt = e.wt;
-    if(G->madj[v][w] != 0) g->E--; // controllo di archi gia inseriti
-    g->madj[v][w] = wt;
-    g->madj[w][v] = wt;
+    if(G->madj[v][w] != 0) G->E--; // controllo di archi gia inseriti
+    G->madj[v][w] = wt;
+    G->madj[w][v] = wt;
 }
-static void insertE(Graph g,Edge e){
+static void insertE(Graph G,Edge e){
     int v = e.v,w = e.w,wt = e.wt;
-    if(G->madj[v][w] == 0) g->E++; // controllo di archi gia inseriti
-    g->madj[v][w] = wt;
-    g->madj[w][v] = wt;
+    if(G->madj[v][w] == 0) G->E++; // controllo di archi gia inseriti
+    G->madj[v][w] = wt;
+    G->madj[w][v] = wt;
 
 }
 void GraphInsertE(Graph g,int id1,int id2,int wt){
@@ -56,12 +55,12 @@ void GraphInsertE(Graph g,int id1,int id2,int wt){
 void GraphRemoveE(Graph g,int id1,int id2){ // si rimuove in una matrice di adiacenze dando peso 0
     removeE(g,EdgeCreate(id1,id2,0));
 }
-void GraphFree(Graph g){
+void GraphFree(Graph G){
     int i = 0;
-    for(i = 0;i<G->V;i++) free(g->madj[i]);
-    free(g->madj);
-    StFree(g->tab);
-    free(g);
+    for(i = 0;i<G->V;i++) free(G->madj[i]);
+    free(G->madj);
+    STfree(G->tab);
+    free(G);
 }
 void displayGraph(Graph g){
     int i,j;
@@ -75,4 +74,31 @@ void displayGraph(Graph g){
                 printf("v: %s%s , w:%s%s , wt %d",e1.id_elab,e1.id_rete,e2.id_elab,e2.id_rete,g->madj[i][j]);
             }       
         }
+}
+int GraphgetIndexST(Graph G,char *key){
+    return getIndex(G->tab,key);
+}
+void GSTinsert(Graph G,elab e){
+    STinsert(G->tab,e );
+}
+static void insertE2(Graph G,Edge e){
+    int v = e.v,w = e.w,wt = e.wt;
+    G->ladj[v] = newEdge(w,wt,G->ladj[v]);
+    G->ladj[w] = newEdge(v,wt,G->ladj[w]);
+}
+void insertELadj(Graph G,int v,int w,int wt){
+    insertE2(G,EdgeCreate(v,w,wt));
+}
+void inLadj(Graph G){
+    int i,j;
+    for(i = 0;i<G->V;i++){
+        for(j = 0;j<G->V;j++){
+            if(G->madj[i][j] != 0){
+                insertELadj(G,i,j,G->madj[i][j]);
+            }
+        }
+    }
+}
+void ordineAlfabetico(){
+
 }
