@@ -16,7 +16,7 @@ static Edge  EDGEcreate(int v, int w, int wt);
 static link  NEW(int v, int wt, link next);
 static void  insertE(Graph G, Edge e);
 static void  removeE(Graph G, Edge e);
-static void  dfsR(Graph G, Edge e, int *time, int *pre, int *post, int *st);
+static void  dfsR(Graph G, Edge e, int *time, int *pre, int *post, int *st , int *flag);
 static void  SCCdfsR(Graph G, int w, int *scc, int *time0, int time1, int *post);
 
 static Edge EDGEcreate(int v, int w, int wt) {
@@ -72,7 +72,9 @@ void GRAPHfree(Graph G) {
   free(G->z);
   free(G);
 }
-
+int getN_nodi(Graph G){
+  return G->V;
+}
 Graph GRAPHload(FILE *fin) {
   int V, i, id1, id2, wt;
   char label1[MAXC], label2[MAXC];
@@ -96,7 +98,9 @@ Graph GRAPHload(FILE *fin) {
   }
   return G;
 }
-
+ST getSt(Graph G){
+  return G->tab;
+}
 void  GRAPHedges(Graph G, Edge *a) {
   int v, E = 0;
   link t;
@@ -165,7 +169,7 @@ static void  removeE(Graph G, Edge e) {
 
 //DFS
 
-static void dfsR(Graph G, Edge e, int *time, int *pre, int *post, int *st) {
+static void dfsR(Graph G, Edge e, int *time, int *pre, int *post, int *st, int *flag) {
   link t; int v, w = e.w,wt = e.wt; Edge x;
   if (e.v != e.w)
     printf("edge (%s, %s) is tree \n", STsearchByIndex(G->tab, e.v), STsearchByIndex(G->tab, e.w)) ;
@@ -173,12 +177,14 @@ static void dfsR(Graph G, Edge e, int *time, int *pre, int *post, int *st) {
   pre[w] = (*time)++;
   for (t = G->ladj[w]; t != G->z; t = t->next)
     if (pre[t->v ] == -1)
-      dfsR(G, EDGEcreate(w, t->v, wt), time, pre, post, st);
+      dfsR(G, EDGEcreate(w, t->v, wt), time, pre, post, st , flag);
     else {
       v = t->v;
       x = EDGEcreate(w, v, wt);
-      if (post[v] == -1)
+      if (post[v] == -1){
         printf("edge (%s, %s) is back \n", STsearchByIndex(G->tab, x.v), STsearchByIndex(G->tab, x.w));
+        (*flag) = 1;
+      }
       else
         if(pre[v]>pre[w])
           printf("edge (%s, %s) is forward \n", STsearchByIndex(G->tab, x.v), STsearchByIndex(G->tab, x.w));
@@ -187,8 +193,10 @@ static void dfsR(Graph G, Edge e, int *time, int *pre, int *post, int *st) {
     }
   post[w] = (*time)++;
 }
-
-void GRAPHdfs(Graph G, int id) {
+int getE(Graph G){
+  return G->E;
+}
+void GRAPHdfs(Graph G, int *flag) {
   int v, time=0, *pre, *post, *st;
   pre = malloc(G->V * sizeof(int));
   post = malloc(G->V * sizeof(int));
@@ -202,12 +210,12 @@ void GRAPHdfs(Graph G, int id) {
     st[v] =  -1;
   }
 
-  dfsR(G, EDGEcreate(id,id,0), &time, pre, post, st); // ricorro col nodo passato come parametro
+  //dfsR(G, EDGEcreate(id,id,0), &time, pre, post, st);
 
   for (v=0; v < G->V; v++) 
     if (pre[v]== -1)
-      dfsR(G, EDGEcreate(v,v,0), &time, pre, post, st);
-
+      dfsR(G, EDGEcreate(v,v,0), &time, pre, post, st , flag);
+  /*
   printf("discovery/endprocessing time labels \n");
   for (v=0; v < G->V; v++)
     printf("vertex %s : %d/%d \n", STsearchByIndex(G->tab, v), pre[v], post[v]);
@@ -215,6 +223,7 @@ void GRAPHdfs(Graph G, int id) {
   printf("resulting DFS tree \n");
   for (v=0; v < G->V; v++)
      printf("parent of vertex %s is vertex  %s \n", STsearchByIndex(G->tab, v), STsearchByIndex(G->tab, st[v]));
+  */
 }
 
 //COMPONENTI FORTEMENTE CONNESSE
@@ -361,4 +370,6 @@ void GRAPHspBF(Graph G, int id){
     printf("\n Negative cycle found!\n");
 }
 */
+
+
 

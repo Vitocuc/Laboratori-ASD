@@ -15,9 +15,12 @@ int   GRAPHgetIndex(Graph G, char *label);
 void  GRAPHinsertE(Graph G, int id1, int id2, int wt);
 void  GRAPHremoveE(Graph G, int id1, int id2);
 void  GRAPHedges(Graph G, Edge *a);
-void  GRAPHdfs(Graph G, int id);
+void  GRAPHdfs(Graph G, int *flag);
 int   GRAPHscc(Graph G);
 void  GRAPHspD(Graph G, int id);
 void  GRAPHspBF(Graph G, int id);
+int getN_nodi(Graph G);
+int getE(Graph G);
+ST getSt(Graph G);
 
 #endif
