@@ -15,14 +15,6 @@ typedef struct{
     elab elab2;
     int flusso;
 }Item;
-typedef struct {
-    int v;
-    int wt;
-}Item_node;
-struct node {
-    Item_node a;
-    link next;
-};
 Graph GraphInit(int V);
 int **allocMadj(int V);
 static Edge EdgeCreate(int v,int w,int wt);
@@ -35,4 +27,9 @@ void displayGraph(Graph g);
 int GraphgetIndexST(Graph G,char *key);
 void GSTinsert(Graph G,elab e);
 void inLadj(Graph G);
+void MergeSort(Edge *A, int N,Graph G);
+void ordineAlfabeticoMadj(Graph G);
+void  GraphEdges(Graph G, Edge *a);
+void sgCompletoLadj(Graph G,char *nome1,char *nome2 , char *nome3);
+void sgCompletoMadj(Graph G,char *nome1,char *nome2 , char *nome3);
 #endif

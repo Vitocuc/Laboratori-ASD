@@ -14,10 +14,13 @@ int main(char argc,char **argv){
 }
 void menu(Graph G){
     int scelta = 0,flag = 0;
-    printf("[1] Trasforma in lista di adiacenza");
+    char nome1[MAXLEN],nome2[MAXLEN],nome3[MAXLEN];
+    while(flag == 0){
+        printf("[1] Trasforma in lista di adiacenza");
     printf("[2] Elenca in ordine alfabetico");
     printf("[3] Verifica se 3 vertici formano un sottografo completo(con lista di adiacenze)");
     printf("[4] Verifica se 3 vertici formano un sottografo completo(con matrice di adiacenze)");
+    printf("[5] Termina");
     printf("Inserisci la scelta: ");
     scanf("%d",&scelta);
     switch (scelta){
@@ -25,16 +28,35 @@ void menu(Graph G){
             inLadj(G);
             break;
         case 2:
+            ordineAlfabeticoMadj(G);
             break;
         case 3:
+            printf("Inserisci il primo nome:");
+            scanf("%s",nome1);
+            printf("Inserisci il secondo nome:");
+            scanf("%s",nome2);
+            printf("Inserisci il terzo nome:");
+            scanf("%s",nome3);
+            sgCompletoLadj(G,nome1,nome2,nome3);
             break;
         case 4:
+            printf("Inserisci il primo nome:");
+            scanf("%s",nome1);
+            printf("Inserisci il secondo nome:");
+            scanf("%s",nome2);
+            printf("Inserisci il terzo nome:");
+            scanf("%s",nome3);
+            sgCompletoMadj(G,nome1,nome2,nome3);
+            break;
+        case 5:
+            flag = 1;
             break;
         default:
             printf("Errore nell'inserimento,riprova");
             break;
     }
-}
+    } 
+} 
 void leggiFile(Graph *G,char *file){
     FILE *fp;
     Item ingressi;
